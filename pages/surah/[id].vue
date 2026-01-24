@@ -22,7 +22,7 @@
       if(lastRead.surahId == payload.surahId && lastRead.ayat >= payload.ayat){
         // console.log('Start Debug 2')
         // console.table(lastRead)
-        // console.table(payload)
+        // console.table(payload)  
         // console.log('End Debug 2')
         return
       }
