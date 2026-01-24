@@ -63,6 +63,7 @@
         <div
           v-for="ayat in data.data.ayat"
           :key="ayat.nomorAyat"
+          :id="`ayat-${ayat.nomorAyat}`"
           class="border-b pb-6 cursor-pointer hover:bg-gray-50"
           @click="saveLastRead(ayat)"
           v-on:mouseover="saveLastRead(ayat)"
