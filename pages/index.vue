@@ -1,14 +1,11 @@
 <script setup>
-  import { ref, onMounted } from 'vue'
+  import { onMounted } from 'vue'
+  const { lastRead, load } = useLastRead()
   const { data, pending, error } = await useFetch(
     'https://equran.id/api/v2/surat'
   )
-  const lastRead = ref(null)
   onMounted(() => {
-    const saved = localStorage.getItem('lastRead')
-    if (saved) {
-      lastRead.value = JSON.parse(saved)
-    }
+    load()
   })
 </script>
 

@@ -4,33 +4,35 @@
   const { data, pending, error } = await useFetch(
     `https://equran.id/api/v2/surat/${surahId}`
   )
+  const { save, load, lastRead } = useLastRead()
+
+  load()
+
   function saveLastRead(ayat) {
     const payload = {
       surahId: data.value.data.nomor,
       surahName: data.value.data.namaLatin,
       ayat: ayat.nomorAyat
     }
-    if(localStorage.getItem('lastRead')){
-      const lastRead = JSON.parse(localStorage.getItem('lastRead'))
-      if(lastRead.surahId == payload.surahId && lastRead.ayat == payload.ayat){
-        // console.log('Start Debug 1')
-        // console.table(lastRead)
-        // console.table(payload)
-        // console.log('End Debug 1')
+
+    if(lastRead.value){
+      console.log('Start Debug 1')
+      
+      if(lastRead.value.surahId == payload.surahId && lastRead.value.ayat == payload.ayat){
+        console.log('Start Debug 2 - Data sama, skip save')
         return
       }
-      if(lastRead.surahId == payload.surahId && lastRead.ayat >= payload.ayat){
-        // console.log('Start Debug 2')
-        // console.table(lastRead)
-        // console.table(payload)  
-        // console.log('End Debug 2')
+      
+      // Cek apakah ayat sebelumnya lebih tinggi
+      if(lastRead.value.surahId == payload.surahId && lastRead.value.ayat >= payload.ayat){
+        console.log('Start Debug 3 - Ayat sebelumnya lebih tinggi, skip save')
         return
       }
     }
-    // console.log('Start Debug 3')
-    // console.table(payload)
-    // console.log('End Debug 3')
-    localStorage.setItem('lastRead', JSON.stringify(payload))
+    
+    console.log('Start Debug 4 - Saving data')
+    console.table(payload)
+    save(payload)
   }
 </script>
 
@@ -49,7 +51,6 @@
     </div>
 
     <div v-else class="mt-6">
-      <!-- Info Surah -->
       <h1 class="text-3xl font-bold">
         {{ data.data.namaLatin }}
       </h1>
@@ -65,6 +66,10 @@
           :key="ayat.nomorAyat"
           :id="`ayat-${ayat.nomorAyat}`"
           class="border-b pb-6 cursor-pointer hover:bg-gray-50"
+          :class="{
+            'bg-yellow-100': lastRead?.surahId == surahId
+            && lastRead?.ayat === ayat.nomorAyat
+          }"
           @click="saveLastRead(ayat)"
           v-on:mouseover="saveLastRead(ayat)"
         >
@@ -72,20 +77,22 @@
             Ayat {{ ayat.nomorAyat }}
           </div>
 
-
           <p class="text-2xl leading-loose text-right font-arabic" style="font-size: 25px !important;">
             {{ ayat.teksArab }}
           </p>
-
 
           <p class="mt-3 italic text-gray-700">
             {{ ayat.teksLatin }}
           </p>
 
-
           <p class="mt-2">
             {{ ayat.teksIndonesia }}
           </p>
+
+          <span v-if="lastRead?.surahId == surahId && lastRead?.ayat === ayat.nomorAyat">
+            Last Read
+          </span>
+
         </div>
       </div>
     </div>
