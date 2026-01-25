@@ -1,14 +1,14 @@
-<script setup>
+<script setup lang="ts">
   const route = useRoute()
   const surahId = route.params.id
   const { data, pending, error } = await useFetch(
     `https://equran.id/api/v2/surat/${surahId}`
   )
   const { save, load, lastRead } = useLastRead()
-
+  const ayatRefs = ref<Record<number, any>>({})
   load()
-
-  function saveLastRead(ayat) {
+  
+  function saveLastRead(ayat: { nomorAyat: number }) {
     const payload = {
       surahId: data.value.data.nomor,
       surahName: data.value.data.namaLatin,
@@ -23,7 +23,6 @@
         return
       }
       
-      // Cek apakah ayat sebelumnya lebih tinggi
       if(lastRead.value.surahId == payload.surahId && lastRead.value.ayat >= payload.ayat){
         console.log('Start Debug 3 - Ayat sebelumnya lebih tinggi, skip save')
         return
@@ -34,12 +33,31 @@
     console.table(payload)
     save(payload)
   }
+
+  onMounted(async () => {
+    // ✅ Fixed: Cek lastRead dengan .value
+    if (
+      !lastRead.value ||
+      lastRead.value.surahId != surahId ||
+      !lastRead.value.ayat
+    ) return
+
+    await nextTick()
+
+    const target = ayatRefs.value[lastRead.value.ayat] // ✅ Fixed
+    if (target) {
+      target.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      })
+    }
+  })
 </script>
 
 <template>
   <div class="p-6 max-w-3xl mx-auto">
     <NuxtLink to="/" class="text-blue-600 underline">
-    ← Kembali ke daftar surah
+      ← Kembali ke daftar surah
     </NuxtLink>
 
     <div v-if="pending" class="mt-6">
@@ -64,6 +82,7 @@
         <div
           v-for="ayat in data.data.ayat"
           :key="ayat.nomorAyat"
+          :ref="el => { if (el) ayatRefs[ayat.nomorAyat] = el }"
           :id="`ayat-${ayat.nomorAyat}`"
           class="border-b pb-6 cursor-pointer hover:bg-gray-50"
           :class="{
@@ -71,7 +90,7 @@
             && lastRead?.ayat === ayat.nomorAyat
           }"
           @click="saveLastRead(ayat)"
-          v-on:mouseover="saveLastRead(ayat)"
+          @mouseover="saveLastRead(ayat)"
         >
           <div class="text-sm text-gray-500 mb-2">
             Ayat {{ ayat.nomorAyat }}
@@ -89,10 +108,13 @@
             {{ ayat.teksIndonesia }}
           </p>
 
-          <span v-if="lastRead?.surahId == surahId && lastRead?.ayat === ayat.nomorAyat">
+          <span 
+            v-if="lastRead?.surahId == surahId && lastRead?.ayat === ayat.nomorAyat"
+            class="ml-2 text-xs bg-yellow-400 px-2 py-1 rounded"
+            style="background-color: yellow !important;"
+          >
             Last Read
           </span>
-
         </div>
       </div>
     </div>
