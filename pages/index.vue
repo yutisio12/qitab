@@ -2,8 +2,12 @@
   import { onMounted } from 'vue'
   const { lastRead, load } = useLastRead()
   const { data, pending, error } = await useFetch(
-    'https://equran.id/api/v2/surat'
+    '/api/surah', {
+      key: 'surah-list',
+      getCachedData: (key) => useNuxtData(key).data.value
+    }
   )
+  const surahList = computed(() => data.value?.data || null)
   onMounted(() => {
     load()
   })
@@ -26,7 +30,7 @@
     <div v-else-if="error">Gagal memuat data</div>
 
     <ul v-else>
-      <li v-for="surah in data.data" :key="surah.nomor">
+      <li v-for="surah in surahList" :key="surah.nomor">
         <NuxtLink
           :to="`/surah/${surah.nomor}`"
           class="block border-b py-3 hover:bg-gray-50"

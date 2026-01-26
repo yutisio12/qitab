@@ -1,9 +1,41 @@
 <script setup lang="ts">
+  import { computed } from 'vue'
+  
+  // ✅ Definisikan interface untuk response API
+  interface Ayat {
+    nomorAyat: number
+    teksArab: string
+    teksLatin: string
+    teksIndonesia: string
+  }
+
+  interface SurahData {
+    nomor: number
+    namaLatin: string
+    arti: string
+    jumlahAyat: number
+    ayat: Ayat[]
+  }
+
+  interface SurahResponse {
+    data: SurahData
+  }
+
   const route = useRoute()
   const surahId = route.params.id
-  const { data, pending, error } = await useFetch(
-    `https://equran.id/api/v2/surat/${surahId}`
+  
+  // ✅ Tambahkan generic type ke useFetch
+  const { data, pending, error } = await useFetch<SurahResponse>(
+    `/api/surah/${surahId}`, {
+      key: `surah-${surahId}`,
+      
+    },
   )
+  
+  const surahData = computed(() => data.value?.data || null)
+  definePageMeta({
+    keepalive: true
+  })
   const { save, load, lastRead } = useLastRead()
   const ayatRefs = ref<Record<number, any>>({})
   load()
@@ -16,21 +48,21 @@
     }
 
     if(lastRead.value){
-      console.log('Start Debug 1')
+      // console.log('Start Debug 1')
       
       if(lastRead.value.surahId == payload.surahId && lastRead.value.ayat == payload.ayat){
-        console.log('Start Debug 2 - Data sama, skip save')
+        // console.log('Start Debug 2 - Data sama, skip save')
         return
       }
       
       if(lastRead.value.surahId == payload.surahId && lastRead.value.ayat >= payload.ayat){
-        console.log('Start Debug 3 - Ayat sebelumnya lebih tinggi, skip save')
+        // console.log('Start Debug 3 - Ayat sebelumnya lebih tinggi, skip save')
         return
       }
     }
     
-    console.log('Start Debug 4 - Saving data')
-    console.table(payload)
+    // console.log('Start Debug 4 - Saving data')
+    // console.table(payload)
     save(payload)
   }
 
@@ -70,17 +102,17 @@
 
     <div v-else class="mt-6">
       <h1 class="text-3xl font-bold">
-        {{ data.data.namaLatin }}
+        {{ surahData.namaLatin }}
       </h1>
 
       <p class="text-gray-600 mt-1">
-        {{ data.data.arti }} • {{ data.data.jumlahAyat }} ayat
+        {{ surahData.arti }} • {{ surahData.jumlahAyat }} ayat
       </p>
 
       <!-- Daftar Ayat -->
       <div class="mt-8 space-y-8">
         <div
-          v-for="ayat in data.data.ayat"
+          v-for="ayat in surahData.ayat"
           :key="ayat.nomorAyat"
           :ref="el => { if (el) ayatRefs[ayat.nomorAyat] = el }"
           :id="`ayat-${ayat.nomorAyat}`"
