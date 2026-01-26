@@ -1,4 +1,7 @@
 <script setup lang="ts">
+  definePageMeta({
+    keepalive: true
+  })
   import { computed } from 'vue'
   
   // ✅ Definisikan interface untuk response API
@@ -24,18 +27,27 @@
   const route = useRoute()
   const surahId = route.params.id
   
-  // ✅ Tambahkan generic type ke useFetch
   const { data, pending, error } = await useFetch<SurahResponse>(
     `/api/surah/${surahId}`, {
       key: `surah-${surahId}`,
-      
+      server: false,
+      lazy: false,
+      // getCachedData(key) {
+      //   const cached = useNuxtData(key).data.value
+      //   console.log('[CACHE CHECK]', key, !!cached)
+      //   return cached
+      // }
     },
   )
+
+  // watchEffect(() => {
+  //   console.log('[SURAH]', surahId, {
+  //     pending: pending.value,
+  //     cached: !!data.value
+  //   })
+  // })
   
   const surahData = computed(() => data.value?.data || null)
-  definePageMeta({
-    keepalive: true
-  })
   const { save, load, lastRead } = useLastRead()
   const ayatRefs = ref<Record<number, any>>({})
   load()
