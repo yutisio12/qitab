@@ -104,7 +104,7 @@
       ← Kembali ke daftar surah
     </NuxtLink>
 
-    <div v-if="pending" class="mt-6">
+    <div v-if="pending && !surahData" class="mt-6">
       Loading surah...
     </div>
 
