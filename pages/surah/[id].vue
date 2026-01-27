@@ -135,12 +135,13 @@
           }"
           @click="saveLastRead(ayat)"
           @mouseover="saveLastRead(ayat)"
+          style="padding: 10px; border-radius: 10px;"
         >
           <div class="text-sm text-gray-500 mb-2">
             Ayat {{ ayat.nomorAyat }}
           </div>
 
-          <p class="text-2xl leading-loose text-right font-arabic" style="font-size: 25px !important;">
+          <p class="text-3xl leading-loose text-right arabic-quran" style="font-size: 36px !important;">
             {{ ayat.teksArab }}
           </p>
 
