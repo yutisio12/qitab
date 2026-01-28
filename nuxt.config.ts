@@ -1,9 +1,23 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import Lara from '@primevue/themes/lara'
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
-  modules: ['@nuxtjs/tailwindcss'],
-  css: ['~/assets/css/main.css'],
+  modules: [
+    '@nuxtjs/tailwindcss',
+    '@primevue/nuxt-module',
+    '@pinia/nuxt',
+  ],
+  primevue: {
+    options: {
+      unstyled: true
+    },
+  },
+  css: [
+    'primeicons/primeicons.css',
+    '~/assets/css/main.css',
+  ],
   typescript: {
     typeCheck: false,
     strict: false,
