@@ -145,9 +145,16 @@
             {{ ayat.teksArab }}
           </p>
 
-          <p class="mt-3 italic text-gray-700">
-            {{ ayat.teksLatin }}
-          </p>
+          <div class="grid grid-cols-2 gap-4">
+            <div class="col-md-6">
+              <p class="mt-3 italic text-gray-700">
+                {{ ayat.teksLatin }}
+              </p>
+            </div>
+            <div class="col-md-6 text-right">
+              <button>Play</button>
+            </div>
+          </div>
 
           <p class="mt-2">
             {{ ayat.teksIndonesia }}
