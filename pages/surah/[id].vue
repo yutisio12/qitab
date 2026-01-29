@@ -3,13 +3,16 @@
     keepalive: true
   })
   import { computed } from 'vue'
+  import Button from 'primevue/button'
+  import { useAudioStore } from '~/stores/audio'
   
   // ✅ Definisikan interface untuk response API
   interface Ayat {
     nomorAyat: number
     teksArab: string
     teksLatin: string
-    teksIndonesia: string
+    teksIndonesia: string,
+    audio: any
   }
 
   interface SurahData {
@@ -32,20 +35,8 @@
       key: `surah-${surahId}`,
       server: false,
       lazy: false,
-      // getCachedData(key) {
-      //   const cached = useNuxtData(key).data.value
-      //   console.log('[CACHE CHECK]', key, !!cached)
-      //   return cached
-      // }
     },
   )
-
-  // watchEffect(() => {
-  //   console.log('[SURAH]', surahId, {
-  //     pending: pending.value,
-  //     cached: !!data.value
-  //   })
-  // })
   
   const surahData = computed(() => data.value?.data || null)
   const { save, load, lastRead } = useLastRead()
@@ -96,6 +87,9 @@
       })
     }
   })
+
+  const audioStore = useAudioStore()
+
 </script>
 
 <template>
@@ -128,31 +122,36 @@
           :key="ayat.nomorAyat"
           :ref="el => { if (el) ayatRefs[ayat.nomorAyat] = el }"
           :id="`ayat-${ayat.nomorAyat}`"
-          class="border-b pb-6 cursor-pointer hover:bg-gray-50"
+          class="border-b pb-6 hover:bg-gray-50"
           :class="{
             'bg-yellow-100': lastRead?.surahId == surahId
             && lastRead?.ayat === ayat.nomorAyat
           }"
           @click="saveLastRead(ayat)"
           @mouseover="saveLastRead(ayat)"
-          style="padding: 10px; border-radius: 10px;"
+          style="padding: 15px; border-radius: 10px;"
         >
           <div class="text-sm text-gray-500 mb-2">
             Ayat {{ ayat.nomorAyat }}
           </div>
 
-          <p class="text-3xl leading-loose text-right arabic-quran" style="font-size: 36px !important;">
+          <p class="text-3xl leading-loose text-right arabic-quran" style="font-size: 38px !important;">
             {{ ayat.teksArab }}
           </p>
 
-          <div class="grid grid-cols-2 gap-4">
+          <div class="grid grid-cols-2 gap-4 mt-3">
             <div class="col-md-6">
               <p class="mt-3 italic text-gray-700">
                 {{ ayat.teksLatin }}
               </p>
             </div>
             <div class="col-md-6 text-right">
-              <button>Play</button>
+              <button class="bg-blue-500 text-white px-2 py-1 rounded mt-3"
+                @click="audioStore.toggle(ayat.audio['05'], `${surahId}-${ayat.nomorAyat}`)"
+              >
+                <i :class="`pi pi-${audioStore.isPlaying && audioStore.currentAyah === `${surahId}-${ayat.nomorAyat}` ? 'stop' : 'play'}`"></i>
+                 {{ audioStore.isPlaying && audioStore.currentAyah === `${surahId}-${ayat.nomorAyat}` ? 'Stop' : 'Play' }}
+              </button>
             </div>
           </div>
 
