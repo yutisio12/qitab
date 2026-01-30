@@ -128,7 +128,6 @@
             && lastRead?.ayat === ayat.nomorAyat
           }"
           @click="saveLastRead(ayat)"
-          @mouseover="saveLastRead(ayat)"
           style="padding: 15px; border-radius: 10px;"
         >
           <div class="text-sm text-gray-500 mb-2">
