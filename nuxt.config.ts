@@ -1,5 +1,4 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-import Lara from '@primevue/themes/lara'
 
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
@@ -16,6 +15,7 @@ export default defineNuxtConfig({
   },
   css: [
     'primeicons/primeicons.css',
+    '~/assets/css/tailwind.css',
     '~/assets/css/main.css',
   ],
   typescript: {

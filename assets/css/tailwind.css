@@ -1,3 +1,134 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* =========================================================
+   CONFIRM DIALOG
+   ========================================================= */
+
+/* Overlay */
+.p-dialog-mask {
+  @apply fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50;
+}
+
+/* Dialog container */
+.p-confirm-dialog {
+  @apply bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4;
+}
+
+/* Header */
+.p-confirm-dialog-header {
+  @apply flex justify-end items-center gap-3 px-6 py-4 border-b;
+}
+
+.p-confirm-dialog-icon {
+  @apply text-yellow-500 text-2xl;
+}
+
+.p-confirm-dialog-title {
+  @apply text-lg font-semibold text-gray-800;
+}
+
+/* Content */
+.p-confirm-dialog-content {
+  @apply px-6 py-5 text-gray-600 leading-relaxed font-semibold;
+}
+
+/* Footer */
+.p-confirm-dialog-footer {
+  @apply flex justify-end gap-3 px-6 py-4 border-t;
+}
+
+/* Buttons */
+.p-confirm-dialog-reject {
+  @apply px-4 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300;
+}
+
+.p-confirm-dialog-accept {
+  @apply px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400;
+}
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+
+/* Toast container */
+.p-toast {
+  @apply fixed top-6 right-6 z-50 space-y-3;
+}
+
+/* Toast card */
+.p-toast-message {
+  @apply flex items-start gap-3 px-4 py-3 rounded-xl shadow-lg border;
+  animation: toast-in 0.25s ease-out;
+}
+
+/* Severity styles */
+.p-toast-message-success {
+  @apply bg-green-50 border-green-200 text-green-800;
+}
+
+.p-toast-message-info {
+  @apply bg-blue-50 border-blue-200 text-blue-800;
+}
+
+.p-toast-message-warn {
+  @apply bg-yellow-50 border-yellow-200 text-yellow-800;
+}
+
+.p-toast-message-error {
+  @apply bg-red-50 border-red-200 text-red-800;
+}
+
+/* Icon */
+.p-toast-icon {
+  @apply text-xl mt-0.5;
+}
+
+/* Text */
+.p-toast-summary {
+  @apply font-semibold;
+}
+
+.p-toast-detail {
+  @apply text-sm opacity-30;
+}
+
+/* Close button */
+.p-toast-icon-close {
+  @apply ml-auto text-gray-400 hover:text-gray-600 cursor-pointer;
+}
+
+/* Animation */
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dark .p-confirm-dialog {
+  @apply bg-gray-800 text-gray-100;
+}
+
+.dark .p-confirm-dialog-header,
+.dark .p-confirm-dialog-footer {
+  @apply border-gray-700;
+}
+
+.dark .p-confirm-dialog-content {
+  @apply text-gray-300;
+}
+
+.dark .p-confirm-dialog-reject {
+  @apply bg-gray-700 text-gray-200 hover:bg-gray-600;
+}
+
+.dark .p-toast-message {
+  @apply bg-gray-800 border-gray-700 text-gray-100;
+}

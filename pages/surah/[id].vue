@@ -3,8 +3,14 @@
     keepalive: true
   })
   import { computed } from 'vue'
-  import Button from 'primevue/button'
   import { useAudioStore } from '~/stores/audio'
+  import { useRouter } from 'vue-router'
+  
+  import { useConfirm } from "primevue/useconfirm";
+  import { useToast } from "primevue/usetoast";
+  const confirm = useConfirm();
+  const toast = useToast();
+  const router = useRouter()
   
   // ✅ Definisikan interface untuk response API
   interface Ayat {
@@ -44,29 +50,26 @@
   load()
   
   function saveLastRead(ayat: { nomorAyat: number }) {
-    const payload = {
-      surahId: data.value.data.nomor,
-      surahName: data.value.data.namaLatin,
-      ayat: ayat.nomorAyat
-    }
 
-    if(lastRead.value){
-      // console.log('Start Debug 1')
-      
-      if(lastRead.value.surahId == payload.surahId && lastRead.value.ayat == payload.ayat){
-        // console.log('Start Debug 2 - Data sama, skip save')
-        return
-      }
-      
-      if(lastRead.value.surahId == payload.surahId && lastRead.value.ayat >= payload.ayat){
-        // console.log('Start Debug 3 - Ayat sebelumnya lebih tinggi, skip save')
-        return
-      }
-    }
-    
-    // console.log('Start Debug 4 - Saving data')
-    // console.table(payload)
-    save(payload)
+    confirm.require({
+        message: ' Simpan sebagai terakhir dibaca?',
+        header: 'Tandai',
+        icon: 'pi pi-bookmark',
+        acceptLabel: 'Simpan',
+        rejectLabel: 'Batal',
+        accept: () => {
+            const payload = {
+              surahId: data.value.data.nomor,
+              surahName: data.value.data.namaLatin,
+              ayat: ayat.nomorAyat
+            }
+            save(payload)
+            toast.add({ summary: 'Tersimpan', detail: 'Tandai berhasil disimpan', life: 3000 });
+        },
+        reject: () => {
+            // toast.add({ summary: 'Dibatalkan', detail: 'Tandai dibatalkan', life: 3000 });
+        }
+    });
   }
 
   onMounted(async () => {
@@ -90,13 +93,19 @@
 
   const audioStore = useAudioStore()
 
+  function goBack() {
+    router.push('/')
+  }
 </script>
 
 <template>
   <div class="p-6 max-w-3xl mx-auto">
-    <NuxtLink to="/" class="text-blue-600 underline">
+    <button class="bg-gray-500 text-white px-2 py-1 rounded" @click="goBack">
+      <i class="pi pi-arrow-left"></i> Kembali
+    </button>
+    <!-- <NuxtLink to="/" class="button text-blue-600 underline">
       ← Kembali ke daftar surah
-    </NuxtLink>
+    </NuxtLink> -->
 
     <div v-if="pending && !surahData" class="mt-6">
       Loading surah...
@@ -127,31 +136,47 @@
             'bg-yellow-100': lastRead?.surahId == surahId
             && lastRead?.ayat === ayat.nomorAyat
           }"
-          @click="saveLastRead(ayat)"
           style="padding: 15px; border-radius: 10px;"
         >
-          <div class="text-sm text-gray-500 mb-2">
-            Ayat {{ ayat.nomorAyat }}
+          <div class="grid grid-cols-2 gap-4 mt-3">
+            <div class="col-md-6">
+              <div class="text-sm text-gray-500 mb-2">
+                Ayat {{ ayat.nomorAyat }}
+              </div>
+            </div>
+            <div class="col-md-6 text-right">
+              <button class="bg-blue-500 text-white px-2 py-1 rounded mt-3 mr-2"
+                @click="audioStore.toggle(ayat.audio['05'], `${surahId}-${ayat.nomorAyat}`)"
+              >
+                <i :class="`pi pi-${audioStore.isPlaying && audioStore.currentAyah === `${surahId}-${ayat.nomorAyat}` ? 'stop' : 'play'}`"></i>
+                 {{ audioStore.isPlaying && audioStore.currentAyah === `${surahId}-${ayat.nomorAyat}` ? 'Stop' : 'Play' }}
+              </button>
+              <button class="bg-yellow-500 text-white px-2 py-1 rounded"
+                @click="saveLastRead(ayat)"
+              >
+                <i class="pi pi-thumbtack"></i>
+              </button>
+            </div>
           </div>
 
-          <p class="text-3xl leading-loose text-right arabic-quran" style="font-size: 38px !important;">
+          <p class="text-3xl leading-loose mt-6 mb-6 text-right arabic-quran" style="font-size: 38px !important;">
             {{ ayat.teksArab }}
           </p>
 
-          <div class="grid grid-cols-2 gap-4 mt-3">
-            <div class="col-md-6">
+          <div class="grid gap-4 mt-3">
+            <div class="col-md-12">
               <p class="mt-3 italic text-gray-700">
                 {{ ayat.teksLatin }}
               </p>
             </div>
-            <div class="col-md-6 text-right">
+            <!-- <div class="col-md-6 text-right">
               <button class="bg-blue-500 text-white px-2 py-1 rounded mt-3"
                 @click="audioStore.toggle(ayat.audio['05'], `${surahId}-${ayat.nomorAyat}`)"
               >
                 <i :class="`pi pi-${audioStore.isPlaying && audioStore.currentAyah === `${surahId}-${ayat.nomorAyat}` ? 'stop' : 'play'}`"></i>
                  {{ audioStore.isPlaying && audioStore.currentAyah === `${surahId}-${ayat.nomorAyat}` ? 'Stop' : 'Play' }}
               </button>
-            </div>
+            </div> -->
           </div>
 
           <p class="mt-2">
