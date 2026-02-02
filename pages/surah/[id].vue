@@ -124,9 +124,10 @@
         {{ surahData.arti }} • {{ surahData.jumlahAyat }} ayat
       </p>
 
+      <Divider />
       <!-- Daftar Ayat -->
-      <div class="mt-8 space-y-8">
-        <div
+      <div class="mt-8 space-y-8" >
+        <!-- <div
           v-for="ayat in surahData.ayat"
           :key="ayat.nomorAyat"
           :ref="el => { if (el) ayatRefs[ayat.nomorAyat] = el }"
@@ -137,60 +138,71 @@
             && lastRead?.ayat === ayat.nomorAyat
           }"
           style="padding: 15px; border-radius: 10px;"
-        >
-          <div class="grid grid-cols-2 gap-4 mt-3">
-            <div class="col-md-6">
-              <div class="text-sm text-gray-500 mb-2">
-                Ayat {{ ayat.nomorAyat }}
+        > -->
+        <ScrollPanel class="shadow-md" style="width: 100%; height: 750px; padding: 15px;">
+          <Fieldset 
+            v-for="ayat in surahData.ayat"
+            :key="ayat.nomorAyat"
+            :ref="el => { if (el) ayatRefs[ayat.nomorAyat] = el }"
+            :id="`ayat-${ayat.nomorAyat}`"
+            class="border-b pb-6 hover:bg-gray-50"
+            :class="{
+              'bg-yellow-100': lastRead?.surahId == surahId
+              && lastRead?.ayat === ayat.nomorAyat
+            }"
+            :legend="`Ayat ${ayat.nomorAyat}`"
+          >
+            <!-- START CONTENT -->
+            <div class="grid grid-cols-2 gap-4 mt-3">
+              <div class="col-md-6">
+                <div class="text-sm text-gray-500 mb-2">
+                </div>
+              </div>
+              <div class="col-md-6 text-right">
+                <button class="bg-blue-500 text-white px-2 py-1 rounded mt-3 mr-2"
+                  @click="audioStore.toggle(ayat.audio['05'], `${surahId}-${ayat.nomorAyat}`)"
+                >
+                  <i :class="`pi pi-${audioStore.isPlaying && audioStore.currentAyah === `${surahId}-${ayat.nomorAyat}` ? 'stop' : 'play'}`"></i>
+                  {{ audioStore.isPlaying && audioStore.currentAyah === `${surahId}-${ayat.nomorAyat}` ? 'Stop' : 'Play' }}
+                </button>
+                <button class="bg-yellow-500 text-white px-2 py-1 rounded"
+                  @click="saveLastRead(ayat)"
+                >
+                  <i class="pi pi-thumbtack"></i>
+                </button>
               </div>
             </div>
-            <div class="col-md-6 text-right">
-              <button class="bg-blue-500 text-white px-2 py-1 rounded mt-3 mr-2"
-                @click="audioStore.toggle(ayat.audio['05'], `${surahId}-${ayat.nomorAyat}`)"
-              >
-                <i :class="`pi pi-${audioStore.isPlaying && audioStore.currentAyah === `${surahId}-${ayat.nomorAyat}` ? 'stop' : 'play'}`"></i>
-                 {{ audioStore.isPlaying && audioStore.currentAyah === `${surahId}-${ayat.nomorAyat}` ? 'Stop' : 'Play' }}
-              </button>
-              <button class="bg-yellow-500 text-white px-2 py-1 rounded"
-                @click="saveLastRead(ayat)"
-              >
-                <i class="pi pi-thumbtack"></i>
-              </button>
+
+            <p class="text-3xl leading-loose mt-6 mb-6 text-right arabic-quran" style="font-size: 38px !important;">
+              {{ ayat.teksArab }}
+            </p>
+
+            <div class="grid gap-4 mt-3">
+              <div class="col-md-12">
+                <p class="mt-3 italic text-gray-700">
+                  {{ ayat.teksLatin }}
+                </p>
+              </div>
             </div>
-          </div>
 
-          <p class="text-3xl leading-loose mt-6 mb-6 text-right arabic-quran" style="font-size: 38px !important;">
-            {{ ayat.teksArab }}
-          </p>
-
-          <div class="grid gap-4 mt-3">
-            <div class="col-md-12">
-              <p class="mt-3 italic text-gray-700">
-                {{ ayat.teksLatin }}
+            <Panel header="Artinya" class="mt-3" toggleable>
+              <p class="m-0">
+                {{ ayat.teksIndonesia }}
               </p>
-            </div>
-            <!-- <div class="col-md-6 text-right">
-              <button class="bg-blue-500 text-white px-2 py-1 rounded mt-3"
-                @click="audioStore.toggle(ayat.audio['05'], `${surahId}-${ayat.nomorAyat}`)"
-              >
-                <i :class="`pi pi-${audioStore.isPlaying && audioStore.currentAyah === `${surahId}-${ayat.nomorAyat}` ? 'stop' : 'play'}`"></i>
-                 {{ audioStore.isPlaying && audioStore.currentAyah === `${surahId}-${ayat.nomorAyat}` ? 'Stop' : 'Play' }}
-              </button>
-            </div> -->
-          </div>
-
-          <p class="mt-2">
-            {{ ayat.teksIndonesia }}
-          </p>
-
+            </Panel>
+          
           <span 
-            v-if="lastRead?.surahId == surahId && lastRead?.ayat === ayat.nomorAyat"
-            class="ml-2 text-xs bg-yellow-400 px-2 py-1 rounded"
-            style="background-color: yellow !important;"
-          >
-            Last Read
-          </span>
-        </div>
+              v-if="lastRead?.surahId == surahId && lastRead?.ayat === ayat.nomorAyat"
+              class="ml-2 text-xs bg-yellow-400 px-2 py-1 rounded"
+              style="background-color: yellow !important;"
+            >
+              Last Read
+            </span>
+            <!-- END CONTENT -->
+          </Fieldset>
+        </ScrollPanel>
+          
+        <!-- </div> -->
       </div>
     </div>
   </div>
