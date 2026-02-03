@@ -139,6 +139,7 @@
           }"
           style="padding: 15px; border-radius: 10px;"
         > -->
+        
         <ScrollPanel class="shadow-md" style="width: 100%; height: 750px; padding: 15px;">
           <Fieldset 
             v-for="ayat in surahData.ayat"
@@ -147,7 +148,7 @@
             :id="`ayat-${ayat.nomorAyat}`"
             class="border-b pb-6 hover:bg-gray-50"
             :class="{
-              'bg-yellow-100': lastRead?.surahId == surahId
+              'bg-orange-100': lastRead?.surahId == surahId
               && lastRead?.ayat === ayat.nomorAyat
             }"
             :legend="`Ayat ${ayat.nomorAyat}`"
@@ -185,13 +186,13 @@
               </div>
             </div>
 
-            <Panel header="Artinya" class="mt-3" toggleable>
+            <Panel header="Artinya" class="mt-3 mb-1" toggleable collapsed>
               <p class="m-0">
                 {{ ayat.teksIndonesia }}
               </p>
             </Panel>
           
-          <span 
+            <span 
               v-if="lastRead?.surahId == surahId && lastRead?.ayat === ayat.nomorAyat"
               class="ml-2 text-xs bg-yellow-400 px-2 py-1 rounded"
               style="background-color: yellow !important;"
