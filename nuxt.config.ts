@@ -10,6 +10,7 @@ export default defineNuxtConfig({
     '@primevue/nuxt-module',
     '@pinia/nuxt',
   ],
+  ssr: false,
   primevue: {
     options: {
       theme: {
