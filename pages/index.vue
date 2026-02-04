@@ -15,7 +15,7 @@
 
 <template>
   <LastReadBanner />
-  <div class="p-6">
+  <div class="p-6 max-w-3xl mx-auto">
     <h1 class="text-2xl font-bold mb-4">
       Daftar Surah Al-Qur’an
     </h1>
