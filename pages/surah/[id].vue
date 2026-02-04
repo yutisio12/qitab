@@ -73,7 +73,6 @@
   }
 
   onMounted(async () => {
-    // ✅ Fixed: Cek lastRead dengan .value
     if (
       !lastRead.value ||
       lastRead.value.surahId != surahId ||
@@ -81,14 +80,17 @@
     ) return
 
     await nextTick()
-
-    const target = ayatRefs.value[lastRead.value.ayat] // ✅ Fixed
-    if (target) {
-      target.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start'
-      })
-    }
+    
+    // Memberikan waktu ekstra untuk ScrollPanel merender kontennya
+    setTimeout(() => {
+      const target = document.getElementById(`ayat-${lastRead.value.ayat}`)
+      if (target) {
+        target.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center'
+        })
+      }
+    }, 300)
   })
 
   const audioStore = useAudioStore()
