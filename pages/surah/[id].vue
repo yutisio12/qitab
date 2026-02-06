@@ -36,11 +36,11 @@
   const route = useRoute()
   const surahId = route.params.id
   
-  const { data, pending, error } = await useFetch<SurahResponse>(
+  const { data, pending, error } = useFetch<SurahResponse>(
     `/api/surah/${surahId}`, {
       key: `surah-${surahId}`,
       server: false,
-      lazy: false,
+      lazy: true,
     },
   )
   
@@ -110,7 +110,12 @@
     </NuxtLink> -->
 
     <div v-if="pending && !surahData" class="mt-6">
-      Loading surah...
+      <Skeleton width="60%" height="2.5rem" class="mb-4"></Skeleton>
+      <Skeleton width="40%" height="1.5rem" class="mb-8"></Skeleton>
+      
+      <div v-for="i in 3" :key="i" class="mb-8">
+        <Skeleton width="100%" height="10rem" class="rounded-lg"></Skeleton>
+      </div>
     </div>
 
     <div v-else-if="error" class="mt-6 text-red-600">
