@@ -3,10 +3,11 @@
   const { lastRead, load } = useLastRead()
   const searchQuery = ref('')
   
-  const { data, pending, error } = await useFetch(
+  const { data, pending, error } = useFetch(
     '/api/surah', {
       key: 'surah-list',
-      getCachedData: (key) => useNuxtData(key).data.value
+      lazy: true,
+      // getCachedData: (key) => useNuxtData(key).data.value
     }
   )
   
@@ -40,21 +41,23 @@
     </div>
     
 
-    <div v-if="pending">
-      <Skeleton width="100%" height="4rem" class="p-4 mb-2"></Skeleton>
-      <Skeleton width="100%" height="4rem" class="p-4 mb-2"></Skeleton>
-      <Skeleton width="100%" height="4rem" class="p-4 mb-2"></Skeleton>
-      <Skeleton width="100%" height="4rem" class="p-4 mb-2"></Skeleton>
-      <Skeleton width="100%" height="4rem" class="p-4 mb-2"></Skeleton>
-      <Skeleton width="100%" height="4rem" class="p-4 mb-2"></Skeleton>
-      <Skeleton width="100%" height="4rem" class="p-4 mb-2"></Skeleton>
-      <Skeleton width="100%" height="4rem" class="p-4 mb-2"></Skeleton>
-      <Skeleton width="100%" height="4rem" class="p-4 mb-2"></Skeleton>
+    <div v-if="pending && (!data || !data.data)" class="mt-4">
+      <div v-for="i in 8" :key="i" class="mb-3">
+        <Skeleton width="100%" height="4.5rem" class="rounded-xl"></Skeleton>
+      </div>
     </div>
-    <div v-else-if="error">Gagal memuat data</div>
+    
+    <div v-else-if="error" class="mt-4 text-red-500">
+      Gagal memuat data surah.
+    </div>
 
-    <div v-else-if="surahList.length === 0" class="text-center py-10 text-gray-500 italic">
-      Surah "{{ searchQuery }}" tidak ditemukan.
+    <div v-else-if="!pending && (!surahList || surahList.length === 0)" class="text-center py-10 text-gray-500 italic">
+      <template v-if="searchQuery">
+        Surah "{{ searchQuery }}" tidak ditemukan.
+      </template>
+      <template v-else>
+        Memuat data...
+      </template>
     </div>
 
     <ul v-else>
