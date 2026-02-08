@@ -22,8 +22,13 @@
     )
   })
 
+  const isMinLoading = ref(true)
+  
   onMounted(() => {
     load()
+    setTimeout(() => {
+      isMinLoading.value = false
+    }, 500)
   })
 </script>
 
@@ -41,7 +46,7 @@
     </div>
     
 
-    <div v-if="pending && (!data || !data.data)" class="mt-4">
+    <div v-if="pending || isMinLoading" class="mt-4">
       <div v-for="i in 8" :key="i" class="mb-3">
         <Skeleton width="100%" height="4.5rem" class="rounded-xl"></Skeleton>
       </div>
@@ -51,7 +56,7 @@
       Gagal memuat data surah.
     </div>
 
-    <div v-else-if="!pending && (!surahList || surahList.length === 0)" class="text-center py-10 text-gray-500 italic">
+    <div v-else-if="!surahList || surahList.length === 0" class="text-center py-10 text-gray-500 italic">
       <template v-if="searchQuery">
         Surah "{{ searchQuery }}" tidak ditemukan.
       </template>
