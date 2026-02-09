@@ -4,6 +4,7 @@ export const useAudioStore = defineStore('audio', () => {
   const audio = ref<HTMLAudioElement | null>(null)
   const currentAyah = ref<string | null>(null)
   const isPlaying = ref(false)
+  const isPlayingContinue = ref(false)
 
   function toggle(url: string, ayahKey: string) {
     // kalau ayat sama → STOP
@@ -36,5 +37,39 @@ export const useAudioStore = defineStore('audio', () => {
     }
   }
 
-  return { toggle, currentAyah, isPlaying }
+  function continuePlay(url: string, ayahKey: string, onNext?: () => void) {
+    // kalau ayat sama → STOP
+    if (currentAyah.value === ayahKey && audio.value) {
+      audio.value.pause()
+      audio.value.currentTime = 0
+      audio.value = null
+      currentAyah.value = null
+      isPlayingContinue.value = false
+      return
+    }
+
+    // stop audio sebelumnya
+    if (audio.value) {
+      audio.value.pause()
+      audio.value.currentTime = 0
+    }
+    
+    audio.value = new Audio(url)
+    currentAyah.value = ayahKey
+    isPlayingContinue.value = true
+
+    audio.value.play()
+
+    audio.value.onended = () => {
+      if (onNext) {
+        onNext()
+      } else {
+        audio.value = null
+        currentAyah.value = null
+        isPlayingContinue.value = false
+      }
+    }
+  }
+
+  return { continuePlay, toggle, currentAyah, isPlaying, isPlayingContinue }
 })
