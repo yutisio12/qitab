@@ -9,7 +9,12 @@
       closeButton: 'p-toast-icon-close',
       closeIcon: 'pi pi-times',
     }" 
-    style="width: 25%; background-color: white !important; color: black !important;"
+    style="
+      min-width: 25%; 
+      max-width: 50%;
+      background-color: white !important; 
+      color: black !important;
+    "
   />
   <ConfirmDialog 
     :pt="{
