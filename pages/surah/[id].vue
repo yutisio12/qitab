@@ -95,6 +95,30 @@
 
   const audioStore = useAudioStore()
 
+  function playContinuous(index: number) {
+    const ayat = surahData.value.ayat[index]
+    if (!ayat) return
+
+    // Scroll into view
+    const target = document.getElementById(`ayat-${ayat.nomorAyat}`)
+    if (target) {
+      target.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      })
+    }
+
+    audioStore.continuePlay(
+      ayat.audio['05'], 
+      `${surahId}-${ayat.nomorAyat}`,
+      () => {
+        if (index + 1 < surahData.value.ayat.length) {
+          playContinuous(index + 1)
+        }
+      }
+    )
+  }
+
   function goBack() {
     router.push('/')
   }
@@ -105,9 +129,6 @@
     <button class="bg-gray-500 text-white px-2 py-1 rounded" @click="goBack">
       <i class="pi pi-arrow-left"></i> Kembali
     </button>
-    <!-- <NuxtLink to="/" class="button text-blue-600 underline">
-      ← Kembali ke daftar surah
-    </NuxtLink> -->
 
     <div v-if="pending && !surahData" class="mt-6">
       <Skeleton width="60%" height="2.5rem" class="mb-4"></Skeleton>
@@ -132,24 +153,11 @@
       </p>
 
       <Divider />
-      <!-- Daftar Ayat -->
       <div class="mt-8 space-y-8" >
-        <!-- <div
-          v-for="ayat in surahData.ayat"
-          :key="ayat.nomorAyat"
-          :ref="el => { if (el) ayatRefs[ayat.nomorAyat] = el }"
-          :id="`ayat-${ayat.nomorAyat}`"
-          class="border-b pb-6 hover:bg-gray-50"
-          :class="{
-            'bg-yellow-100': lastRead?.surahId == surahId
-            && lastRead?.ayat === ayat.nomorAyat
-          }"
-          style="padding: 15px; border-radius: 10px;"
-        > -->
         
         <ScrollPanel class="shadow-md" style="width: 100%; height: 750px; padding: 15px;">
           <Fieldset 
-            v-for="ayat in surahData.ayat"
+            v-for="(ayat, index) in surahData.ayat"
             :key="ayat.nomorAyat"
             :ref="el => { if (el) ayatRefs[ayat.nomorAyat] = el }"
             :id="`ayat-${ayat.nomorAyat}`"
@@ -167,11 +175,18 @@
                 </div>
               </div>
               <div class="col-md-6 text-right">
+                <button class="bg-green-500 text-white px-2 py-1 rounded mt-3 mr-2"
+                  @click="playContinuous(index)"
+                >
+                  <i :class="`pi pi-${audioStore.isPlayingContinue && audioStore.currentAyah === `${surahId}-${ayat.nomorAyat}` ? 'pause' : 'angle-double-right'}`"></i>
+                  {{ audioStore.isPlayingContinue && audioStore.currentAyah === `${surahId}-${ayat.nomorAyat}` ? '' : '' }}
+                </button>
+
                 <button class="bg-blue-500 text-white px-2 py-1 rounded mt-3 mr-2"
                   @click="audioStore.toggle(ayat.audio['05'], `${surahId}-${ayat.nomorAyat}`)"
                 >
-                  <i :class="`pi pi-${audioStore.isPlaying && audioStore.currentAyah === `${surahId}-${ayat.nomorAyat}` ? 'stop' : 'play'}`"></i>
-                  {{ audioStore.isPlaying && audioStore.currentAyah === `${surahId}-${ayat.nomorAyat}` ? 'Stop' : 'Play' }}
+                  <i :class="`pi pi-${audioStore.isPlaying && audioStore.currentAyah === `${surahId}-${ayat.nomorAyat}` ? 'pause' : 'play'}`"></i>
+                  {{ audioStore.isPlaying && audioStore.currentAyah === `${surahId}-${ayat.nomorAyat}` ? '' : '' }}
                 </button>
                 <button class="bg-yellow-500 text-white px-2 py-1 rounded"
                   @click="saveLastRead(ayat)"
