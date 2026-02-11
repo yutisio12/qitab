@@ -27,17 +27,38 @@
       footer: 'p-confirm-dialog-footer',
       mask: 'p-dialog-mask',
       pcRejectButton: {
-        root: 'p-confirm-dialog-reject'
+        root: {
+          style: {
+            backgroundColor: '#f87171',
+            borderColor: '#f87171'
+          },
+          onMouseenter: (e) => {
+            e.target.style.backgroundColor = 'red'
+            e.target.style.borderColor = 'red'
+          },
+          onMouseleave: (e) => {
+            e.target.style.backgroundColor = '#f87171'
+            e.target.style.borderColor = '#f87171'
+          }
+        }
       },
       pcAcceptButton: {
-        root: 'p-confirm-dialog-accept'
+        root: {
+          style: {
+            backgroundColor: '#22c55e',
+            borderColor: '#22c55e',
+            color: 'white'
+          },
+          onMouseenter: (e) => {
+            e.target.style.backgroundColor = '#16a34a'
+            e.target.style.borderColor = '#16a34a'
+          },
+          onMouseleave: (e) => {
+            e.target.style.backgroundColor = '#22c55e'
+            e.target.style.borderColor = '#22c55e'
+          }
+        }
       },
-      rejectButton: {
-        root: 'p-confirm-dialog-reject'
-      },
-      acceptButton: {
-        root: 'p-confirm-dialog-accept'
-      }
     }"
     style="text-align: center;"
   ></ConfirmDialog>
