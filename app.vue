@@ -62,5 +62,7 @@
     }"
     style="text-align: center;"
   ></ConfirmDialog>
-  <NuxtPage />
+  <NuxtLayout>
+    <NuxtPage />
+  </NuxtLayout>
 </template>

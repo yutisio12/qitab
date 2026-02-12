@@ -5,10 +5,14 @@ import Aura from '@primevue/themes/aura';
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
+  devServer: {
+    https: true,
+  },
   modules: [
     '@nuxtjs/tailwindcss',
     '@primevue/nuxt-module',
     '@pinia/nuxt',
+    '@nuxtjs/color-mode'
   ],
   ssr: false,
   primevue: {
@@ -16,10 +20,15 @@ export default defineNuxtConfig({
       theme: {
         preset: Aura,
         options: {
-          darkModeSelector: ''
+          darkModeSelector: '.dark'
         }
       }
     },
+  },
+  colorMode: {
+    preference: 'system', // default ikut system
+    fallback: 'light',    // kalau system tidak tersedia
+    classSuffix: '',      // supaya jadi .dark bukan .dark-mode
   },
   css: [
     'primeicons/primeicons.css',
@@ -42,4 +51,5 @@ export default defineNuxtConfig({
       ],
     },
   },
+  
 })

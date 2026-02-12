@@ -5,6 +5,11 @@
   font-style: normal;
 }
 
+
+body {
+  @apply bg-white dark:bg-gray-900 transition-colors duration-300;
+}
+
 .arabic-quran {
   font-family: 'Amiri Quran', serif;
   direction: rtl;
