@@ -11,7 +11,12 @@ const isDark = computed({
 })
 
 const toggleColorMode = () => {
-  colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
+  
+  const savedColor = localStorage.getItem('nuxt-color-mode')
+  
+  colorMode.preference = (savedColor ?? colorMode.value) === 'dark' ? 'light' : 'dark'
+  
+  // localStorage.setItem('colorMode', colorMode.value)
 }
 </script>
 
