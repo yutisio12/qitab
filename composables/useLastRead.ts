@@ -26,7 +26,6 @@ export function useLastRead() {
     }
   }
 
-  // load dipanggil manual dari halaman
   return {
     lastRead,
     load,
