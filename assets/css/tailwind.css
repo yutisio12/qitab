@@ -22,7 +22,7 @@
 }
 
 .p-confirm-dialog-icon {
-  @apply text-yellow-500 text-2xl;
+  @apply text-purple-500 text-2xl;
 }
 
 .p-confirm-dialog-title {
@@ -73,7 +73,7 @@
 }
 
 .p-toast-message-warn {
-  @apply bg-yellow-50 border-yellow-200 text-yellow-800;
+  @apply bg-purple-50 border-purple-200 text-purple-800;
 }
 
 .p-toast-message-error {
