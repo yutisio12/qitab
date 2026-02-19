@@ -41,7 +41,7 @@
       </h1>
             <IconField class="w-full md:w-64">
         <InputIcon class="pi pi-search" />
-        <InputText v-model="searchQuery" placeholder="Cari Surah..." class="w-full border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:border-gray-500 rounded-xl" />
+        <InputText v-model="searchQuery" placeholder="   Cari Surah..." class="w-full border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:border-gray-500 rounded-xl" />
       </IconField>
     </div>
     
