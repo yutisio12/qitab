@@ -163,7 +163,7 @@
             :id="`ayat-${ayat.nomorAyat}`"
             class="border-b dark:border-gray-700 pb-6 hover:bg-gray-50 dark:hover:bg-gray-800/50"
             :class="{
-              'bg-orange-100 dark:bg-orange-950/30': lastRead?.surahId == surahId
+              'bg-purple-100 dark:bg-purple-950/30': lastRead?.surahId == surahId
               && lastRead?.ayat === ayat.nomorAyat
             }"
             :legend="`Ayat ${ayat.nomorAyat}`"
@@ -188,7 +188,7 @@
                   <i :class="`pi pi-${audioStore.isPlaying && audioStore.currentAyah === `${surahId}-${ayat.nomorAyat}` ? 'pause' : 'play'}`"></i>
                   {{ audioStore.isPlaying && audioStore.currentAyah === `${surahId}-${ayat.nomorAyat}` ? '' : '' }}
                 </button>
-                <button class="bg-yellow-500 text-white px-2 py-1 rounded"
+                <button class="bg-purple-500 text-white px-2 py-1 rounded"
                   @click="saveLastRead(ayat)"
                 >
                   <i class="pi pi-thumbtack"></i>
@@ -216,8 +216,8 @@
           
             <span 
               v-if="lastRead?.surahId == surahId && lastRead?.ayat === ayat.nomorAyat"
-              class="ml-2 text-xs bg-yellow-400 dark:bg-yellow-600 px-2 py-1 rounded"
-              style="background-color: yellow !important;"
+              class="ml-2 text-xs bg-purple-400 dark:bg-purple-600 px-2 py-1 rounded text-white"
+              style="background-color: #a855f7 !important;"
             >
               Last Read
             </span>
