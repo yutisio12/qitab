@@ -39,10 +39,10 @@
       <h1 class="text-2xl font-bold dark:text-white">
         Daftar Surah Al-Qur’an
       </h1>
-      <div class="relative w-full md:w-64">
-        <i class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500"></i>
-        <InputText v-model="searchQuery" placeholder="Cari Surah..." class="w-full pl-10 border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:border-gray-500 rounded-xl" />
-      </div>
+            <IconField class="w-full md:w-64">
+        <InputIcon class="pi pi-search" />
+        <InputText v-model="searchQuery" placeholder="Cari Surah..." class="w-full border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:border-gray-500 rounded-xl" />
+      </IconField>
     </div>
     
 
