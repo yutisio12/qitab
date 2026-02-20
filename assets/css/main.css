@@ -1,7 +1,8 @@
 @font-face {
   font-family: 'Amiri Quran';
   /* src: url('/fonts/AmiriQuran-Regular.ttf') format('truetype'); */
-  src: url('/fonts/kfgqpc.otf') format('truetype');
+  /* src: url('/fonts/kfgqpc.otf') format('truetype'); */
+  src: url('/fonts/misbah.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
