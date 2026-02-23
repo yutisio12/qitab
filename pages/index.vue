@@ -66,7 +66,6 @@
     </div>
 
     <ul v-else>
-      <ScrollTop />
       <ScrollPanel class="shadow-md" style="width: 100%; height: 750px; padding: 15px;">
         <SurahListItem 
           v-for="surah in surahList" 
