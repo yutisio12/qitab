@@ -2,7 +2,7 @@
   definePageMeta({
     keepalive: true
   })
-  import { computed } from 'vue'
+  import { computed, ref, nextTick } from 'vue'
   import { useAudioStore } from '~/stores/audio'
   import { useRouter } from 'vue-router'
   
@@ -11,8 +11,9 @@
   const confirm = useConfirm();
   const toast = useToast();
   const router = useRouter()
-  
-  // ✅ Definisikan interface untuk response API
+
+
+
   interface Ayat {
     nomorAyat: number
     teksArab: string
@@ -34,11 +35,27 @@
   }
 
   const route = useRoute()
-  const surahId = route.params.id
+  const surahId = parseInt(route.params.id as string)
   
   const { data, pending, error } = useFetch<SurahResponse>(
     `/api/surah/${surahId}`, {
       key: `surah-${surahId}`,
+      server: false,
+      lazy: true,
+    },
+  )
+
+  const { data:surahNext, pending:pendingNext, error:errorNext } = useFetch<SurahResponse>(
+    `/api/surah/${surahId + 1}`, {
+      key: `surah-${surahId + 1}`,
+      server: false,
+      lazy: true,
+    },
+  )
+
+  const { data:surahPrev, pending:pendingPrev, error:errorPrev } = useFetch<SurahResponse>(
+    `/api/surah/${surahId - 1}`, {
+      key: `surah-${surahId - 1}`,
       server: false,
       lazy: true,
     },
@@ -122,12 +139,61 @@
   function goBack() {
     router.push('/')
   }
+
+  function goNext() {
+    router.push(`/surah/${surahId + 1}`)
+  }
+
+  function goPrev() {
+    router.push(`/surah/${surahId - 1}`)
+  }
+
+  const searchQuery = ref(null)
+  const scrollPanel = ref(null)
+  // watch(searchQuery, async (val) => {
+  //   if (!val) return
+  //   if(val < 1 || val > surahData.value.jumlahAyat) return
+    
+  //   await nextTick()
+  //   const container = scrollPanel.value.$el.querySelector('.p-scrollpanel-content')
+  //   const target = container.querySelector(`#ayat-${val}`)
+  //   if(target){
+  //     container.scrollTo({
+  //       top: target.offsetTop,
+  //       behavior: 'smooth'
+  //     })
+  //   }
+  // })
+
+  const jumpToSurah = async (event) => {
+    const val = event.value
+    if (!val) return
+    if(val < 1 || val > surahData.value.jumlahAyat) return
+    
+    await nextTick()
+    const container = scrollPanel.value.$el.querySelector('.p-scrollpanel-content')
+    const target = container.querySelector(`#ayat-${val}`)
+    if(target){
+      container.scrollTo({
+        top: target.offsetTop,
+        behavior: 'smooth'
+      })
+    }
+  }
+
 </script>
 
 <template>
-  <div class="p-6 max-w-3xl mx-auto">
+  <div class="p-6 max-w-3xl mx-auto" style="overflow: hidden !important;">
+
     <button class="bg-gray-500 text-white px-2 py-1 rounded" @click="goBack">
-      <i class="pi pi-arrow-left"></i> Kembali
+      <i class="pi pi-list"></i>
+    </button>
+    <button v-if="surahPrev" class="bg-purple-700 text-white px-2 py-1 rounded ml-2" @click="goPrev">
+      {{ surahPrev?.data?.namaLatin }} <i class="pi pi-backward"></i>
+    </button>
+    <button v-if="surahNext" class="bg-purple-700 text-white px-2 py-1 rounded ml-2" @click="goNext">
+      <i class="pi pi-forward"></i> {{ surahNext?.data?.namaLatin }}
     </button>
 
     <div v-if="pending && !surahData" class="mt-6">
@@ -144,18 +210,37 @@
     </div>
 
     <div v-else class="mt-6">
-      <h1 class="text-3xl font-bold dark:text-white">
-        {{ surahData.namaLatin }}
-      </h1>
 
-      <p class="text-gray-600 dark:text-gray-400 mt-1">
-        {{ surahData.arti }} • {{ surahData.jumlahAyat }} ayat
-      </p>
+      <div class="grid grid-cols-[1fr_auto] gap-2 md:gap-4 mt-3 items-center">
+        <div class="min-w-0">
+          <h1 class="text-3xl md:text-3xl font-bold dark:text-white truncate">
+            {{ surahData.namaLatin }}
+          </h1>
 
+          <p class=" md:text-sm text-gray-600 dark:text-gray-400 mt-1 truncate">
+            {{ surahData.arti }} • {{ surahData.jumlahAyat }} ayat
+          </p>
+        </div>
+        <div class="flex justify-end">
+          <IconField class="w-[130px] md:w-64">
+            <InputIcon class="pi pi-search" />
+            <InputNumber 
+              v-model="searchQuery"
+              @input="jumpToSurah"
+              placeholder="   Ayat"
+              inputmode="numeric"
+              :min="1"
+              :max="surahData.jumlahAyat"
+              class="w-full"
+              inputClass="w-full border border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:border-primary rounded-xl text-sm md:text-base" />
+          </IconField>
+        </div>
+      </div>
+      
       <Divider />
       <div class="mt-8 space-y-8" >
         
-        <ScrollPanel class="shadow-md" style="width: 100%; height: 750px; padding: 15px;">
+        <ScrollPanel ref="scrollPanel" class="shadow-md" style="width: 100%; height: 70vh; padding: 15px;">
           <Fieldset 
             v-for="(ayat, index) in surahData.ayat"
             :key="ayat.nomorAyat"
@@ -169,26 +254,24 @@
             :legend="`Ayat ${ayat.nomorAyat}`"
           >
             <!-- START CONTENT -->
-            <div class="grid grid-cols-2 gap-4 mt-3">
-              <div class="col-md-6">
+            <div class="flex flex-wrap justify-between items-center gap-4 mt-3">
+              <div>
                 <div class="text-sm text-gray-500 mb-2">
                 </div>
               </div>
-              <div class="col-md-6 text-right">
-                <button class="bg-green-500 text-white px-2 py-1 rounded mt-3 mr-2"
+              <div class="flex gap-2">
+                <button class="bg-green-500 text-white px-3 py-2 rounded-lg"
                   @click="playContinuous(index)"
                 >
                   <i :class="`pi pi-${audioStore.isPlayingContinue && audioStore.currentAyah === `${surahId}-${ayat.nomorAyat}` ? 'pause' : 'angle-double-right'}`"></i>
-                  {{ audioStore.isPlayingContinue && audioStore.currentAyah === `${surahId}-${ayat.nomorAyat}` ? '' : '' }}
                 </button>
 
-                <button class="bg-blue-500 text-white px-2 py-1 rounded mt-3 mr-2"
+                <button class="bg-blue-500 text-white px-3 py-2 rounded-lg"
                   @click="audioStore.toggle(ayat.audio['05'], `${surahId}-${ayat.nomorAyat}`)"
                 >
                   <i :class="`pi pi-${audioStore.isPlaying && audioStore.currentAyah === `${surahId}-${ayat.nomorAyat}` ? 'pause' : 'play'}`"></i>
-                  {{ audioStore.isPlaying && audioStore.currentAyah === `${surahId}-${ayat.nomorAyat}` ? '' : '' }}
                 </button>
-                <button class="bg-purple-500 text-white px-2 py-1 rounded"
+                <button class="bg-purple-500 text-white px-3 py-2 rounded-lg"
                   @click="saveLastRead(ayat)"
                 >
                   <i class="pi pi-thumbtack"></i>
@@ -200,8 +283,8 @@
               {{ ayat.teksArab }}
             </p>
 
-            <div class="grid gap-4 mt-3">
-              <div class="col-md-12">
+            <div class="mt-3">
+              <div>
                 <p class="mt-3 italic text-gray-700 dark:text-gray-300">
                   {{ ayat.teksLatin }}
                 </p>
@@ -224,7 +307,9 @@
             <!-- END CONTENT -->
           </Fieldset>
         </ScrollPanel>
-          
+
+
+        
         <!-- </div> -->
       </div>
     </div>
