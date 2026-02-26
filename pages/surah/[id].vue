@@ -186,15 +186,25 @@
 <template>
   <div class="p-6 max-w-3xl mx-auto" style="overflow: hidden !important;">
 
-    <button class="bg-gray-500 text-white px-2 py-1 rounded" @click="goBack">
-      <i class="pi pi-list"></i>
-    </button>
-    <button v-if="surahPrev" class="bg-purple-700 text-white px-2 py-1 rounded ml-2" @click="goPrev">
-      {{ surahPrev?.data?.namaLatin }} <i class="pi pi-backward"></i>
-    </button>
-    <button v-if="surahNext" class="bg-purple-700 text-white px-2 py-1 rounded ml-2" @click="goNext">
-      <i class="pi pi-forward"></i> {{ surahNext?.data?.namaLatin }}
-    </button>
+    <div v-if="pending && !surahData">
+      <Skeleton height="2rem" width="15rem" class="mb-2"></Skeleton>
+      <!-- <Skeleton height="2rem" width="5rem" class="mb-2"></Skeleton>
+      <Skeleton height="2rem" width="5rem" class="mb-2"></Skeleton> -->
+    </div>
+    <div v-else>
+      <button class="bg-gray-500 text-white px-2 py-1 rounded" @click="goBack">
+        <i class="pi pi-list"></i>
+      </button>
+
+      <button v-if="surahPrev" class="bg-purple-700 text-white px-2 py-1 rounded ml-2" @click="goPrev">
+        {{ surahPrev?.data?.namaLatin }} <i class="pi pi-backward"></i>
+      </button>
+
+      <button v-if="surahNext" class="bg-purple-700 text-white px-2 py-1 rounded ml-2" @click="goNext">
+        <i class="pi pi-forward"></i> {{ surahNext?.data?.namaLatin }}
+      </button>
+      
+    </div>
 
     <div v-if="pending && !surahData" class="mt-6">
       <Skeleton width="60%" height="2.5rem" class="mb-4"></Skeleton>
