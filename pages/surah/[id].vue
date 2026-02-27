@@ -289,7 +289,9 @@
               </div>
             </div>
 
-            <p class="text-3xl leading-loose mt-6 mb-6 text-right arabic-quran" style="font-size: 38px !important;">
+            <p class="text-3xl leading-loose mt-6 mb-6 text-right arabic-quran" style="font-size: 38px !important; 
+            line-height: 2.5;
+            ">
               {{ ayat.teksArab }}
             </p>
 
