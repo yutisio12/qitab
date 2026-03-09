@@ -273,7 +273,7 @@
                 <button class="bg-green-500 text-white px-3 py-2 rounded-lg"
                   @click="playContinuous(index)"
                 >
-                  <i :class="`pi pi-${audioStore.isPlayingContinue && audioStore.currentAyah === `${surahId}-${ayat.nomorAyat}` ? 'pause' : 'angle-double-right'}`"></i>
+                  <i :class="`pi pi-${audioStore.isPlayingContinue && audioStore.currentAyah === `${surahId}-${ayat.nomorAyat}` ? 'pause' : 'step-forward'}`"></i>
                 </button>
 
                 <button class="bg-blue-500 text-white px-3 py-2 rounded-lg"

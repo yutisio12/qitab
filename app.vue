@@ -12,7 +12,7 @@
     style="
       min-width: 25%; 
       max-width: 50%;
-      background-color: white !important; 
+      /* background-color: white !important;  */
       color: black !important;
     "
   />
