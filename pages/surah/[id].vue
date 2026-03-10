@@ -12,7 +12,77 @@
   const toast = useToast();
   const router = useRouter()
 
+  // component for speddial
+    const scrollToTop = () => {
+      const container = document.querySelector('.p-scrollpanel-content')
+      if (container) {
+        container.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        })
+      } else {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        })
+      }
+    }
+    const colorMode = useColorMode()
+    const isDark = computed({
+      get() {
+        return colorMode.value === 'dark'
+      },
+      set(value) {
+        colorMode.preference = value ? 'dark' : 'light'
+      }
+    })
 
+    const toggleColorMode = () => {
+      
+      const savedColor = localStorage.getItem('nuxt-color-mode')
+      
+      colorMode.preference = (savedColor ?? colorMode.value) === 'dark' ? 'light' : 'dark'
+    }
+    // v-if="colorMode.value === 'dark'" class="pi pi-moon text-lg"
+    const itemsSpeed = computed(() => [
+      {
+        label: 'Scroll to Top',
+        icon: 'pi pi-arrow-up',
+        command: () => {
+          scrollToTop();
+        }
+      },
+      {
+        label: 'Color Mode',
+        icon: colorMode.value === 'dark' ? 'pi pi-sun' : 'pi pi-moon',
+        command: () => {
+          toggleColorMode();
+        }
+      },
+      {
+        label: 'List',
+        icon: 'pi pi-list',
+        command: () => {
+          goBack();
+        }
+      },
+      {
+        label: 'Previous',
+        icon: 'pi pi-backward',
+        command: () => {
+          goPrev();
+        }
+      },
+      {
+        label: 'Next',
+        icon: 'pi pi-forward',
+        command: () => {
+          goNext();
+        }
+      },
+      
+    ])
+  // end component for speeddial
 
   interface Ayat {
     nomorAyat: number
@@ -320,8 +390,19 @@
           </Fieldset>
         </ScrollPanel>
 
-
-        
+        <SpeedDial 
+          :model="itemsSpeed" 
+          :radius="120" 
+          type="quarter-circle" 
+          direction="up-left" 
+          :style="{ position: 'absolute', right: '3rem', bottom: '3rem' }"
+          :buttonProps="{ severity: 'help', rounded: true }"
+        />
+        <!-- <SpeedDial 
+          :model="itemsSpeed" 
+          direction="left"
+          style="position: absolute; bottom: 3rem; right: 3rem"
+        /> -->
         <!-- </div> -->
       </div>
     </div>
