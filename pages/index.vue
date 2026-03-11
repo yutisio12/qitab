@@ -11,6 +11,55 @@
     }
   )
   
+  // component for speddial
+    const scrollToTop = () => {
+      const container = document.querySelector('.p-scrollpanel-content')
+      if (container) {
+        container.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        })
+      } else {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        })
+      }
+    }
+    const colorMode = useColorMode()
+    const isDark = computed({
+      get() {
+        return colorMode.value === 'dark'
+      },
+      set(value) {
+        colorMode.preference = value ? 'dark' : 'light'
+      }
+    })
+
+    const toggleColorMode = () => {
+      
+      const savedColor = localStorage.getItem('nuxt-color-mode')
+      
+      colorMode.preference = (savedColor ?? colorMode.value) === 'dark' ? 'light' : 'dark'
+    }
+    const itemsSpeed = computed(() => [
+      {
+        label: 'Scroll to Top',
+        icon: 'pi pi-arrow-up',
+        command: () => {
+          scrollToTop();
+        }
+      },
+      {
+        label: 'Color Mode',
+        icon: colorMode.value === 'dark' ? 'pi pi-sun' : 'pi pi-moon',
+        command: () => {
+          toggleColorMode();
+        }
+      },
+    ])
+  // end component for speeddial
+
   const surahList = computed(() => {
     if (!data.value?.data) return []
     if (!searchQuery.value) return data.value.data
@@ -74,5 +123,11 @@
         />
       </ScrollPanel>
     </ul>
+    <SpeedDial 
+      :model="itemsSpeed" 
+      direction="left" 
+      :style="{ position: 'absolute', right: '3rem', bottom: '3rem' }"
+      :buttonProps="{ severity: 'help', rounded: true }"
+    />
   </div>
 </template>
