@@ -1,8 +1,10 @@
 <script setup>
   import { onMounted, ref, computed } from 'vue'
   const { lastRead, load } = useLastRead()
-  const searchQuery = ref('')
   
+  const searchQuery = ref('')
+  let toLastRead = ref('')
+
   const { data, pending, error } = useFetch(
     '/api/surah', {
       key: 'surah-list',
@@ -51,6 +53,13 @@
         }
       },
       {
+        label: 'Bookmark',
+        icon: 'pi pi-bookmark',
+        command: () => {
+          window.location.href = toLastRead;
+        }
+      },
+      {
         label: 'Color Mode',
         icon: colorMode.value === 'dark' ? 'pi pi-sun' : 'pi pi-moon',
         command: () => {
@@ -78,6 +87,7 @@
     setTimeout(() => {
       isMinLoading.value = false
     }, 500)
+    toLastRead = lastRead.value ? `/surah/${lastRead.value.surahId}#ayat-${lastRead.value.ayat}` : ''
   })
 </script>
 
@@ -102,7 +112,7 @@
     </div>
     
     <div v-else-if="error" class="mt-4 text-red-500">
-      Gagal memuat data surah.
+      Gagal memuat data.
     </div>
 
     <div v-else-if="!surahList || surahList.length === 0" class="text-center py-10 text-gray-500 dark:text-gray-400 italic">
