@@ -3,6 +3,7 @@
   const { lastRead, load } = useLastRead()
   
   const searchQuery = ref('')
+  const searchInput = ref(null)
   let toLastRead = ref('')
 
   const { data, pending, error } = useFetch(
@@ -38,6 +39,12 @@
       }
     })
 
+    const focusSearch = () => {
+      nextTick(() => {
+        searchInput.value?.$el?.focus()
+      })
+    }
+
     const toggleColorMode = () => {
       
       const savedColor = localStorage.getItem('nuxt-color-mode')
@@ -57,6 +64,13 @@
         icon: 'pi pi-bookmark',
         command: () => {
           window.location.href = toLastRead;
+        }
+      },
+      {
+        label: 'Search',
+        icon: 'pi pi-search',
+        command: () => {
+          focusSearch()
         }
       },
       {
@@ -100,7 +114,7 @@
       </h1>
       <IconField class="w-full md:w-64">
         <InputIcon class="pi pi-search" />
-        <InputText v-model="searchQuery" placeholder="  Cari Surah..." class="w-full border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:border-gray-500 rounded-xl" />
+        <InputText ref="searchInput" v-model="searchQuery" placeholder="  Cari Surah..." class="w-full border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:border-gray-500 rounded-xl" />
       </IconField>
     </div>
     
