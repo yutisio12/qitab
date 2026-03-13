@@ -46,6 +46,13 @@
     // v-if="colorMode.value === 'dark'" class="pi pi-moon text-lg"
     const itemsSpeed = computed(() => [
       {
+        label: 'Search',
+        icon: 'pi pi-search',
+        command: () => {
+          focusSearch()
+        }
+      },
+      {
         label: 'Scroll to Top',
         icon: 'pi pi-arrow-up',
         command: () => {
@@ -219,21 +226,14 @@
   }
 
   const searchQuery = ref(null)
+  const searchInput = ref(null)
   const scrollPanel = ref(null)
-  // watch(searchQuery, async (val) => {
-  //   if (!val) return
-  //   if(val < 1 || val > surahData.value.jumlahAyat) return
-    
-  //   await nextTick()
-  //   const container = scrollPanel.value.$el.querySelector('.p-scrollpanel-content')
-  //   const target = container.querySelector(`#ayat-${val}`)
-  //   if(target){
-  //     container.scrollTo({
-  //       top: target.offsetTop,
-  //       behavior: 'smooth'
-  //     })
-  //   }
-  // })
+
+  const focusSearch = () => {
+    nextTick(() => {
+      searchInput.value?.$el?.querySelector('input').focus()
+    })
+  }
 
   const jumpToSurah = async (event) => {
     const val = event.value
@@ -305,6 +305,7 @@
           <IconField class="w-[130px] md:w-64">
             <InputIcon class="pi pi-search" />
             <InputNumber 
+              ref="searchInput"
               v-model="searchQuery"
               @input="jumpToSurah"
               placeholder="   Ayat"
@@ -395,7 +396,11 @@
           :radius="120" 
           type="quarter-circle" 
           direction="up-left" 
-          :style="{ position: 'absolute', right: '3rem', bottom: '3rem' }"
+          :style="{ 
+            position: 'absolute', 
+            right: '3rem', 
+            bottom: '3rem', 
+          }"
           :buttonProps="{ severity: 'help', rounded: true }"
         />
         <!-- <SpeedDial 
