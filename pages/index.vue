@@ -146,12 +146,25 @@
           :surah="surah" 
         />
       </ScrollPanel>
+      <!-- <SpeedDial 
+        :model="itemsSpeed" 
+        direction="left" 
+        :style="{ position: 'absolute', right: '3rem', bottom: '3rem' }"
+        :buttonProps="{ severity: 'help', rounded: true }"
+      /> -->
+      <SpeedDial 
+        :model="itemsSpeed" 
+        :radius="120" 
+        type="quarter-circle" 
+        direction="up-left" 
+        :style="{ 
+          position: 'absolute', 
+          right: '3rem', 
+          bottom: '3rem', 
+        }"
+        :buttonProps="{ severity: 'help', rounded: true }"
+      />
     </ul>
-    <SpeedDial 
-      :model="itemsSpeed" 
-      direction="left" 
-      :style="{ position: 'absolute', right: '3rem', bottom: '3rem' }"
-      :buttonProps="{ severity: 'help', rounded: true }"
-    />
+    
   </div>
 </template>
