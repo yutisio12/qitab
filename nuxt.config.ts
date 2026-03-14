@@ -1,6 +1,25 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
+import { definePreset } from '@primevue/themes';
 import Aura from '@primevue/themes/aura';
+
+const MyPreset = definePreset(Aura, {
+  semantic: {
+    primary: {
+      50: '{purple.50}',
+      100: '{purple.100}',
+      200: '{purple.200}',
+      300: '{purple.300}',
+      400: '{purple.400}',
+      500: '{purple.500}',
+      600: '{purple.600}',
+      700: '{purple.700}',
+      800: '{purple.800}',
+      900: '{purple.900}',
+      950: '{purple.950}'
+    }
+  }
+});
 
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
@@ -18,7 +37,7 @@ export default defineNuxtConfig({
   primevue: {
     options: {
       theme: {
-        preset: Aura,
+        preset: MyPreset,
         options: {
           darkModeSelector: '.dark'
         }
