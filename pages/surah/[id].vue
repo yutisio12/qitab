@@ -313,7 +313,7 @@
               :min="1"
               :max="surahData.jumlahAyat"
               class="w-full"
-              inputClass="w-full border border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:border-primary rounded-xl text-sm md:text-base" />
+              inputClass="w-full border border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:border-purple-500 focus:ring-1 focus:ring-purple-500 rounded-xl text-sm md:text-base" />
           </IconField>
         </div>
       </div>
