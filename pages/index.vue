@@ -131,7 +131,7 @@
 
     <div v-else-if="!surahList || surahList.length === 0" class="text-center py-10 text-gray-500 dark:text-gray-400 italic">
       <template v-if="searchQuery">
-        Surah "{{ searchQuery }}" tidak ditemukan.
+        Surah tidak ditemukan.
       </template>
       <template v-else>
         Memuat data...
@@ -139,19 +139,14 @@
     </div>
 
     <ul v-else>
-      <ScrollPanel class="shadow-md" style="width: 100%; height: 750px; padding: 15px;">
+      <ScrollPanel class="shadow-md" style="width: 100%; height: 730px; padding: 15px;">
         <SurahListItem 
           v-for="surah in surahList" 
           :key="surah.nomor" 
           :surah="surah" 
         />
       </ScrollPanel>
-      <!-- <SpeedDial 
-        :model="itemsSpeed" 
-        direction="left" 
-        :style="{ position: 'absolute', right: '3rem', bottom: '3rem' }"
-        :buttonProps="{ severity: 'help', rounded: true }"
-      /> -->
+    
       <SpeedDial 
         :model="itemsSpeed" 
         :radius="120" 
