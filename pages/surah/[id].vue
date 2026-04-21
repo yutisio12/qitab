@@ -74,7 +74,7 @@
         }
       },
       {
-        label: 'Previous',
+        label: 'Prev',
         icon: 'pi pi-backward',
         command: () => {
           goPrev();
