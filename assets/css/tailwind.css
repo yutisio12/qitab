@@ -2,144 +2,227 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Override PrimeVue Input Focus Colors */
+@layer base {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+@layer utilities {
+  .transition-premium {
+    transition-timing-function: cubic-bezier(0.32,0.72,0,1);
+    transition-duration: 700ms;
+  }
+}
+
+.p-inputtext {
+  @apply font-sans rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-3 text-sm text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500;
+  transition: all 0.3s cubic-bezier(0.32,0.72,0,1);
+}
+
 .p-inputtext:enabled:focus,
-.p-inputtext.p-focus,
-.p-inputnumber-input:enabled:focus,
-.p-inputnumber-input:focus,
-.p-inputnumber.p-focus > .p-inputtext {
+.p-inputtext.p-focus {
   border-color: #a855f7 !important;
-  box-shadow: 0 0 0 1px #a855f7 !important;
+  box-shadow: 0 0 0 3px rgba(168,85,247,0.15) !important;
   outline: none !important;
 }
 
-/* =========================================================
-   CONFIRM DIALOG
-   ========================================================= */
-
-/* Overlay */
-.p-dialog-mask {
-  @apply fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50;
+.p-inputtext:hover:not(:focus):not(.p-disabled) {
+  border-color: rgba(168,85,247,0.4) !important;
 }
 
-/* Dialog container */
-.p-confirm-dialog {
-  @apply bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4;
+.p-inputnumber-input {
+  @apply font-sans rounded-2xl;
 }
 
-/* Header */
-.p-confirm-dialog-header {
-  @apply flex justify-end items-center gap-3 px-6 py-4 border-b;
+.p-inputnumber {
+  @apply rounded-2xl;
 }
 
-.p-confirm-dialog-icon {
-  @apply text-purple-500 text-2xl;
+.p-inputnumber .p-inputtext {
+  @apply rounded-2xl;
 }
 
-.p-confirm-dialog-title {
-  @apply text-lg font-semibold text-gray-800;
+.p-icon-field {
+  @apply rounded-2xl;
 }
 
-/* Content */
-.p-confirm-dialog-content {
-  @apply px-6 py-5 text-gray-600 leading-relaxed font-semibold;
+.p-icon-field .p-input-icon {
+  @apply text-gray-400 dark:text-gray-500 mt-0.5;
 }
 
-/* Footer */
-.p-confirm-dialog-footer {
-  @apply flex justify-end gap-3 px-6 py-4 border-t;
+.p-skeleton {
+  @apply rounded-2xl bg-gray-100 dark:bg-white/5 overflow-hidden relative;
 }
 
-/* Buttons */
-.p-confirm-dialog-reject {
-  @apply px-4 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300;
+.p-skeleton::after {
+  background: linear-gradient(90deg, transparent, rgba(168,85,247,0.08), transparent);
 }
 
-.p-confirm-dialog-accept {
-  @apply px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400;
+.p-scrollpanel {
+  @apply rounded-2xl;
 }
 
-/* =========================================================
-   TOAST
-   ========================================================= */
+.p-scrollpanel .p-scrollpanel-content {
+  @apply rounded-2xl;
+}
 
-/* Toast container */
+.p-scrollpanel .p-scrollpanel-bar {
+  @apply bg-purple-300 dark:bg-purple-700 rounded-full w-1;
+}
+
+.p-divider {
+  @apply border-gray-100 dark:border-white/5 my-8;
+}
+
+.p-fieldset {
+  @apply border-0 bg-transparent p-0 mb-0;
+}
+
+.p-fieldset-legend {
+  @apply text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider px-0 py-0 mb-2;
+  border: 0;
+  background: transparent;
+}
+
+.p-panel {
+  @apply rounded-2xl border border-gray-100 dark:border-white/5 overflow-hidden bg-gray-50/50 dark:bg-white/[0.02];
+}
+
+.p-panel-header {
+  @apply px-4 py-2.5 text-xs font-medium text-gray-500 dark:text-gray-400;
+  background: transparent;
+  border: 0;
+}
+
+.p-panel-content {
+  @apply px-4 pb-3;
+  border: 0;
+}
+
+.p-panel .p-panel-content {
+  border: 0;
+}
+
+.p-panel-toggleable .p-panel-header {
+  @apply cursor-pointer;
+}
+
+.p-speeddial {
+  @apply z-40;
+}
+
+.p-speeddial-button {
+  @apply shadow-lg backdrop-blur-xl bg-purple-600/90 dark:bg-purple-500/90 hover:bg-purple-700 dark:hover:bg-purple-600 border border-white/20 text-white;
+  transition: all 0.3s cubic-bezier(0.32,0.72,0,1) !important;
+}
+
+.p-speeddial-button:hover {
+  transform: scale(1.05);
+}
+
+.p-speeddial-button:active {
+  transform: scale(0.95);
+}
+
+.p-speeddial-action {
+  @apply bg-white/90 dark:bg-white/10 backdrop-blur-xl text-gray-700 dark:text-gray-200 border border-gray-100 dark:border-white/10 shadow-lg;
+  transition: all 0.3s cubic-bezier(0.32,0.72,0,1) !important;
+}
+
+.p-speeddial-action:hover {
+  @apply bg-purple-50 dark:bg-purple-500/20 text-purple-600 dark:text-purple-300;
+  transform: scale(1.1) translateY(-2px);
+}
+
 .p-toast {
   @apply fixed top-6 right-6 z-50 space-y-3;
 }
 
-/* Toast card */
 .p-toast-message {
-  @apply flex items-start gap-3 px-4 py-3 rounded-xl shadow-lg border;
-  animation: toast-in 0.25s ease-out;
+  @apply flex items-start gap-3 px-5 py-4 rounded-2xl shadow-xl border backdrop-blur-xl;
+  animation: toastSlideIn 0.4s cubic-bezier(0.32,0.72,0,1);
 }
 
-/* Severity styles */
 .p-toast-message-success {
-  @apply bg-green-50 border-green-200 text-green-800;
+  @apply bg-emerald-50/90 dark:bg-emerald-950/40 border-emerald-200/50 dark:border-emerald-800/30 text-emerald-800 dark:text-emerald-200;
 }
 
 .p-toast-message-info {
-  @apply bg-blue-50 border-blue-200 text-blue-800;
+  @apply bg-blue-50/90 dark:bg-blue-950/40 border-blue-200/50 dark:border-blue-800/30 text-blue-800 dark:text-blue-200;
 }
 
 .p-toast-message-warn {
-  @apply bg-purple-50 border-purple-200 text-purple-800;
+  @apply bg-purple-50/90 dark:bg-purple-950/40 border-purple-200/50 dark:border-purple-800/30 text-purple-800 dark:text-purple-200;
 }
 
 .p-toast-message-error {
-  @apply bg-red-50 border-red-200 text-red-800;
+  @apply bg-red-50/90 dark:bg-red-950/40 border-red-200/50 dark:border-red-800/30 text-red-800 dark:text-red-200;
 }
 
-/* Icon */
 .p-toast-icon {
-  @apply text-xl mt-0.5;
+  @apply text-lg mt-0.5 shrink-0;
 }
 
-/* Text */
 .p-toast-summary {
-  @apply font-semibold;
+  @apply text-sm font-semibold;
 }
 
 .p-toast-detail {
-  @apply text-sm opacity-30;
+  @apply text-xs opacity-50 mt-0.5;
 }
 
-/* Close button */
 .p-toast-icon-close {
-  @apply ml-auto text-gray-400 hover:text-gray-600 cursor-pointer;
+  @apply ml-auto text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 cursor-pointer transition-colors duration-300;
 }
 
-/* Animation */
-@keyframes toast-in {
+.p-confirm-dialog {
+  @apply rounded-3xl overflow-hidden;
+}
+
+.p-dialog-mask {
+  @apply fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4;
+}
+
+.p-confirm-dialog {
+  @apply bg-white dark:bg-gray-900 rounded-3xl shadow-2xl w-full max-w-md mx-auto border border-gray-100 dark:border-white/5;
+}
+
+.p-confirm-dialog-header {
+  @apply flex items-center gap-3 px-6 pt-6 pb-2;
+}
+
+.p-confirm-dialog-icon {
+  @apply text-purple-500 text-xl;
+}
+
+.p-confirm-dialog-title {
+  @apply text-base font-semibold text-gray-900 dark:text-gray-100;
+}
+
+.p-confirm-dialog-content {
+  @apply px-6 py-4 text-sm text-gray-600 dark:text-gray-400 leading-relaxed;
+}
+
+.p-confirm-dialog-footer {
+  @apply flex justify-end gap-3 px-6 pb-6 pt-2;
+}
+
+.p-confirm-dialog-reject {
+  @apply px-5 py-2 rounded-xl text-sm font-medium bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10 transition-all duration-300;
+}
+
+.p-confirm-dialog-accept {
+  @apply px-5 py-2 rounded-xl text-sm font-medium bg-purple-600 text-white hover:bg-purple-700 transition-all duration-300;
+}
+
+@keyframes toastSlideIn {
   from {
     opacity: 0;
-    transform: translateY(-8px);
+    transform: translateY(-12px) scale(0.96);
   }
-
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
-}
-
-.dark .p-confirm-dialog {
-  @apply bg-gray-800 text-gray-100;
-}
-
-.dark .p-confirm-dialog-header,
-.dark .p-confirm-dialog-footer {
-  @apply border-gray-700;
-}
-
-.dark .p-confirm-dialog-content {
-  @apply text-gray-300;
-}
-
-.dark .p-confirm-dialog-reject {
-  @apply bg-gray-700 text-gray-200 hover:bg-gray-600;
-}
-
-.dark .p-toast-message {
-  @apply bg-gray-800 border-gray-700 text-gray-100;
 }

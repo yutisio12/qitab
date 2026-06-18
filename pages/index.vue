@@ -1,165 +1,199 @@
-<script setup>
-  import { onMounted, ref, computed } from 'vue'
-  const { lastRead, load } = useLastRead()
-  
-  const searchQuery = ref('')
-  const searchInput = ref(null)
-  let toLastRead = ref('')
+<script setup lang="ts">
+import { onMounted, ref, computed, nextTick } from 'vue'
 
-  const { data, pending, error } = useFetch(
-    '/api/surah', {
-      key: 'surah-list',
-      lazy: true,
-      // getCachedData: (key) => useNuxtData(key).data.value
-    }
+const { lastRead, load } = useLastRead()
+
+const searchQuery = ref('')
+const searchInput = ref<HTMLInputElement | null>(null)
+const isMinLoading = ref(true)
+
+const { data, pending, error } = useFetch('/api/surah', {
+  key: 'surah-list',
+  lazy: true,
+})
+
+const colorMode = useColorMode()
+const isDark = computed({
+  get() { return colorMode.value === 'dark' },
+  set(v) { colorMode.preference = v ? 'dark' : 'light' }
+})
+
+const scrollToTop = () => {
+  if (scrollPanelEl.value) {
+    scrollPanelEl.value.scrollTo({ top: 0, behavior: 'smooth' })
+  } else {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+}
+
+const focusSearch = () => {
+  nextTick(() => searchInput.value?.$el?.focus())
+}
+
+const toggleColorMode = () => {
+  const saved = localStorage.getItem('nuxt-color-mode')
+  colorMode.preference = (saved ?? colorMode.value) === 'dark' ? 'light' : 'dark'
+}
+
+const itemsSpeed = computed(() => [
+  {
+    label: 'Scroll to Top',
+    icon: 'pi pi-arrow-up',
+    command: () => scrollToTop()
+  },
+  {
+    label: 'Search',
+    icon: 'pi pi-search',
+    command: () => focusSearch()
+  },
+  {
+    label: 'Color Mode',
+    icon: colorMode.value === 'dark' ? 'pi pi-sun' : 'pi pi-moon',
+    command: () => toggleColorMode()
+  },
+])
+
+const surahList = computed(() => {
+  if (!data.value?.data) return []
+  if (!searchQuery.value) return data.value.data
+  const q = searchQuery.value.toLowerCase()
+  return data.value.data.filter((s: any) =>
+    s.namaLatin.toLowerCase().includes(q) || s.nomor.toString().includes(q)
   )
-  
-  // component for speddial
-    const scrollToTop = () => {
-      const container = document.querySelector('.p-scrollpanel-content')
-      if (container) {
-        container.scrollTo({
-          top: 0,
-          behavior: 'smooth'
-        })
-      } else {
-        window.scrollTo({
-          top: 0,
-          behavior: 'smooth'
-        })
-      }
-    }
-    const colorMode = useColorMode()
-    const isDark = computed({
-      get() {
-        return colorMode.value === 'dark'
-      },
-      set(value) {
-        colorMode.preference = value ? 'dark' : 'light'
-      }
-    })
+})
 
-    const focusSearch = () => {
-      nextTick(() => {
-        searchInput.value?.$el?.focus()
-      })
-    }
+const scrollPanelEl = ref<any>(null)
+const scrollbarY = ref(0)
 
-    const toggleColorMode = () => {
-      
-      const savedColor = localStorage.getItem('nuxt-color-mode')
-      
-      colorMode.preference = (savedColor ?? colorMode.value) === 'dark' ? 'light' : 'dark'
-    }
-    const itemsSpeed = computed(() => [
-      {
-        label: 'Scroll to Top',
-        icon: 'pi pi-arrow-up',
-        command: () => {
-          scrollToTop();
-        }
-      },
-      {
-        label: 'Bookmark',
-        icon: 'pi pi-bookmark',
-        command: () => {
-          window.location.href = toLastRead;
-        }
-      },
-      {
-        label: 'Search',
-        icon: 'pi pi-search',
-        command: () => {
-          focusSearch()
-        }
-      },
-      {
-        label: 'Color Mode',
-        icon: colorMode.value === 'dark' ? 'pi pi-sun' : 'pi pi-moon',
-        command: () => {
-          toggleColorMode();
-        }
-      },
-    ])
-  // end component for speeddial
+function onScroll(event: any) {
+  const el = event.target
+  const maxScroll = el.scrollHeight - el.clientHeight
+  scrollbarY.value = maxScroll > 0 ? (el.scrollTop / maxScroll) * 100 : 0
+}
 
-  const surahList = computed(() => {
-    if (!data.value?.data) return []
-    if (!searchQuery.value) return data.value.data
-    
-    const query = searchQuery.value.toLowerCase()
-    return data.value.data.filter(surah => 
-      surah.namaLatin.toLowerCase().includes(query) || 
-      surah.nomor.toString().includes(query)
-    )
-  })
-
-  const isMinLoading = ref(true)
-  
-  onMounted(() => {
-    load()
-    setTimeout(() => {
-      isMinLoading.value = false
-    }, 500)
-    toLastRead = lastRead.value ? `/surah/${lastRead.value.surahId}#ayat-${lastRead.value.ayat}` : ''
-  })
+onMounted(() => {
+  load()
+  setTimeout(() => { isMinLoading.value = false }, 500)
+})
 </script>
 
 <template>
-  <LastReadBanner />
-  <div class="p-6 max-w-3xl mx-auto">
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-      <h1 class="text-2xl font-bold dark:text-white">
-        Daftar Surah Al-Qur’an
+  <div class="px-4 sm:px-6 pt-28 sm:pt-32 pb-24 max-w-4xl mx-auto">
+    <!-- Hero -->
+    <div class="text-center mb-10 sm:mb-14 animate-fade-up opacity-0" style="animation-fill-mode: forwards;">
+      <span class="eyebrow mb-4 inline-flex">Al-Qur'an</span>
+      <h1 class="text-3xl sm:text-5xl lg:text-6xl font-display font-bold tracking-tight text-gray-900 dark:text-white mt-4 leading-[1.1]">
+        Daftar Surah
       </h1>
-      <IconField class="w-full md:w-64">
-        <InputIcon class="pi pi-search" />
-        <InputText ref="searchInput" v-model="searchQuery" placeholder="  Cari Surah..." class="w-full border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:border-purple-500 focus:ring-1 focus:ring-purple-500 rounded-xl" />
-      </IconField>
-    </div>
-    
+      <p class="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-3 max-w-md mx-auto">
+        Bacalah Al-Qur'an dengan khusyuk dan pahami maknanya
+      </p>
 
-    <div v-if="pending || isMinLoading" class="mt-4">
-      <div v-for="i in 8" :key="i" class="mb-3">
-        <Skeleton width="100%" height="4.5rem" class="rounded-xl"></Skeleton>
+      <!-- Search -->
+      <div class="max-w-sm mx-auto mt-6 sm:mt-8">
+        <div class="double-bezel">
+          <div class="double-bezel-inner flex items-center gap-2 px-4 py-1">
+            <svg class="w-4 h-4 text-gray-400 dark:text-gray-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" />
+            </svg>
+            <input
+              ref="searchInput"
+              v-model="searchQuery"
+              placeholder="Cari surah..."
+              class="w-full bg-transparent border-0 outline-none text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 py-2.5"
+            />
+            <kbd class="hidden sm:inline-flex text-[10px] font-medium text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-white/5 px-1.5 py-0.5 rounded-md">/</kbd>
+          </div>
+        </div>
       </div>
     </div>
-    
-    <div v-else-if="error" class="mt-4 text-red-500">
-      Gagal memuat data.
+
+    <!-- Last Read -->
+    <div class="animate-fade-up opacity-0" style="animation-delay: 150ms; animation-fill-mode: forwards;">
+      <LastReadBanner />
     </div>
 
-    <div v-else-if="!surahList || surahList.length === 0" class="text-center py-10 text-gray-500 dark:text-gray-400 italic">
-      <template v-if="searchQuery">
-        Surah tidak ditemukan.
-      </template>
-      <template v-else>
-        Memuat data...
-      </template>
+    <!-- Loading -->
+    <div v-if="pending || isMinLoading" class="grid grid-cols-1 gap-3 mt-4">
+      <div v-for="i in 6" :key="i" class="animate-fade-up opacity-0" :style="{ animationDelay: `${200 + i * 80}ms`, animationFillMode: 'forwards' }">
+        <div class="double-bezel">
+          <div class="double-bezel-inner p-4">
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 rounded-2xl bg-gray-100 dark:bg-white/5 animate-pulse" />
+              <div class="flex-1 space-y-2">
+                <div class="h-4 w-32 bg-gray-100 dark:bg-white/5 rounded-lg animate-pulse" />
+                <div class="h-3 w-24 bg-gray-50 dark:bg-white/[0.03] rounded-lg animate-pulse" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <ul v-else>
-      <ScrollPanel class="shadow-md" style="width: 100%; height: 730px; padding: 15px;">
-        <SurahListItem 
-          v-for="surah in surahList" 
-          :key="surah.nomor" 
-          :surah="surah" 
+    <!-- Error -->
+    <div v-else-if="error" class="text-center py-20">
+      <div class="w-16 h-16 rounded-2xl bg-red-100 dark:bg-red-900/20 border border-red-200/30 dark:border-red-700/20 flex items-center justify-center mx-auto mb-4">
+        <svg class="w-6 h-6 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10" /><path d="m15 9-6 6" /><path d="m9 9 6 6" />
+        </svg>
+      </div>
+      <p class="text-sm text-red-500">Gagal memuat data surah.</p>
+    </div>
+
+    <!-- Empty -->
+    <div v-else-if="!surahList || surahList.length === 0" class="text-center py-20">
+      <div class="w-16 h-16 rounded-2xl bg-gray-100 dark:bg-white/5 border border-gray-200/30 dark:border-white/10 flex items-center justify-center mx-auto mb-4">
+        <svg class="w-6 h-6 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" />
+        </svg>
+      </div>
+      <p class="text-sm text-gray-500 dark:text-gray-400">
+        <template v-if="searchQuery">Surah tidak ditemukan.</template>
+        <template v-else>Memuat data...</template>
+      </p>
+    </div>
+
+    <!-- Surah List -->
+    <div v-else>
+      <div
+        ref="scrollPanelEl"
+        @scroll="onScroll"
+        class="space-y-2 sm:space-y-3 max-h-[65vh] overflow-y-auto pr-1 scrollbar-thin"
+      >
+        <SurahListItem
+          v-for="(surah, index) in surahList"
+          :key="surah.nomor"
+          :surah="surah"
+          class="animate-fade-up opacity-0"
+          :style="{ animationDelay: `${200 + index * 60}ms`, animationFillMode: 'forwards' }"
         />
-      </ScrollPanel>
-    
-      <SpeedDial 
-        :model="itemsSpeed" 
-        :radius="120" 
-        type="quarter-circle" 
-        direction="up-left" 
-        :style="{ 
-          position: 'absolute', 
-          right: '3rem', 
-          bottom: '3rem', 
-        }"
+      </div>
+
+      <!-- SpeedDial -->
+      <SpeedDial
+        :model="itemsSpeed"
+        :radius="100"
+        type="quarter-circle"
+        direction="up-left"
+        :style="{ position: 'fixed', right: '1.5rem', bottom: '1.5rem' }"
         :buttonProps="{ severity: 'help', rounded: true }"
       />
-    </ul>
-    
+    </div>
   </div>
 </template>
+
+<style scoped>
+.scrollbar-thin::-webkit-scrollbar {
+  width: 3px;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(168, 85, 247, 0.2);
+  border-radius: 999px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: rgba(168, 85, 247, 0.4);
+}
+</style>
