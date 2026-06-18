@@ -7,7 +7,6 @@ const { lastRead } = useLastRead()
     v-if="lastRead"
     class="double-bezel mb-6"
   >
-<<<<<<< HEAD
     <div class="double-bezel-inner px-5 py-4 sm:px-6 sm:py-5 flex items-center justify-between gap-4">
       <div class="flex items-center gap-3 min-w-0">
         <div class="w-9 h-9 rounded-xl bg-purple-100 dark:bg-purple-900/30 border border-purple-200/30 dark:border-purple-700/20 flex items-center justify-center shrink-0">
@@ -30,12 +29,6 @@ const { lastRead } = useLastRead()
         </svg>
       </NuxtLink>
     </div>
-=======
-    <p class="text-sm text-gray-600 dark:text-gray-300 text-semibold">Ditandai: </p>
-    <NuxtLink :to="`/surah/${lastRead.surahId}#ayat-${lastRead.ayat}`"
-      class="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600">
-      {{ lastRead.lastRead?.surahName || lastRead.surahName }} - {{ lastRead.ayat }}
-    </NuxtLink>
->>>>>>> 83e6716d253ce28a1f5401dffd628b00ef8d3323
+
   </div>
 </template>
