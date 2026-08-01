@@ -37,7 +37,7 @@ const toggleColorMode = () => {
 
 const itemsSpeed = computed(() => [
   {
-    label: 'Scroll to Top',
+    label: 'Top',
     icon: 'pi pi-arrow-up',
     command: () => scrollToTop()
   },
