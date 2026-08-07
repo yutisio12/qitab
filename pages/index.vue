@@ -149,7 +149,7 @@ onMounted(() => {
       </div>
       <p class="text-sm text-gray-500 dark:text-gray-400">
         <template v-if="searchQuery">Surah tidak ditemukan.</template>
-        <template v-else>Memuat data...</template>
+        <template v-else>Memuat Surah ...</template>
       </p>
     </div>
 
