@@ -87,7 +87,7 @@ const itemsSpeed = computed(() => [
     command: () => focusSearch()
   },
   {
-    label: 'Scroll to Top',
+    label: 'Scroll Top',
     icon: 'pi pi-arrow-up',
     command: () => scrollToTop()
   },
