@@ -15,7 +15,7 @@ const { lastRead } = useLastRead()
           </svg>
         </div>
         <div class="min-w-0">
-          <p class="text-xs font-medium text-gray-500 dark:text-gray-400">Terakhir Dibaca</p>
+          <p class="text-xs font-medium text-gray-500 dark:text-gray-400">Terakhir </p>
           <p class="text-sm font-semibold text-gray-900 dark:text-white truncate">{{ lastRead.surahName }} · Ayat {{ lastRead.ayat }}</p>
         </div>
       </div>
