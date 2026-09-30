@@ -65,7 +65,7 @@ watch(route, () => { menuOpen.value = false })
         <button
           @click="toggleColorMode"
           class="flex items-center justify-center w-8 h-8 rounded-full text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-all duration-300 ease-premium"
-          aria-label="Toggle dark mode"
+          aria-label="Theme"
         >
           <svg v-if="isDark" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="4" />
