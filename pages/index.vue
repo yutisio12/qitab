@@ -7,6 +7,8 @@ const searchQuery = ref('')
 const searchInput = ref<HTMLInputElement | null>(null)
 const isMinLoading = ref(true)
 
+// soon added jadwah sholat
+
 const { data, pending, error } = useFetch('/api/surah', {
   key: 'surah-list',
   lazy: true,
