@@ -115,7 +115,7 @@ const itemsSpeed = computed(() => [
 
 function saveLastRead(ayat: { nomorAyat: number }) {
   confirm.require({
-    message: 'Mark this Ayat as last read?',
+    message: 'Mark this as last read?',
     header: 'Tandai',
     icon: 'pi pi-bookmark',
     acceptLabel: 'Simpan',
